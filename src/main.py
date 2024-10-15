@@ -14,7 +14,7 @@ class Product:
 
 
 class Category:
-    name: str  # Здесь мы пишем название атрибута и указываем тип
+    name: str
     description: str
     products: list
     category_counter: int = 0

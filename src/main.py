@@ -5,28 +5,56 @@ class Product:
     price: float
     quantity: int
 
-    def __init__(self, name, description, price, quantity):
+    def __init__(self, name: str, description: str, price: float, quantity: int):
         """Метод для инициализации экземпляра класса. Задаем значения атрибутам экземпляра."""
-        self.name = name  # эквивалентно prod.name = 'orange'
-        self.description = description  # эквивалентно prod.description = 'juicy'
-        self.price = price  # эквивалентно prod.price = 50.0
-        self.quantity = quantity  # эквивалентно prod.quantity = 100
+        self.name = name
+        self.description = description
+        self.price = price
+        self.quantity = quantity
+    @classmethod
+    def new_product(cls, product_data: dict):
+        """Класс-метод для создания нового продукта из словаря."""
+        return cls(
+            name=product_data.get('name'),
+            description=product_data.get('description'),
+            price=product_data.get('price'),
+            quantity=product_data.get('quantity')
+        )
+
+    def __repr__(self):
+        return f"Product(name={self.name}, description={self.description}, price={self.price}, quantity={self.quantity})"
 
 
 class Category:
-    name: str
-    description: str
-    products: list
-    category_counter: int = 0
-    product_counter: int = 0
+    category_counter: int = 0  # Счетчик категорий
+    product_counter: int = 0    # Счетчик продуктов
 
-    def __init__(self, name, description, products):
+    def __init__(self, name: str, description: str):
         """Метод для инициализации экземпляра класса. Задаем значения атрибутам экземпляра."""
-        self.name = name  # эквивалентно prod.name = 'orange'
-        self.description = description  # эквивалентно prod.description = 'juicy'
-        self.products = products  # эквивалентно prod.products = ['orange', 'apple', 'banana']
+        self.name = name
+        self.description = description
+        self.__products = []  # Инициализируем пустой список для хранения продуктов
         Category.category_counter += 1
-        Category.product_counter += len(products)
+        def add_product(self, product: Product):
+            """Метод для добавления продукта в категорию."""
+            if isinstance(product, Product):  # Проверяем, что передан объект класса Product
+                self.__products.append(product)  # Добавляем продукт в приватный список
+                Category.product_counter += 1  # Увеличиваем счетчик продуктов
+            else:
+                raise ValueError("Можно добавлять только экземпляры класса Product.")  # Исключение, если передан не Product
+
+        @property
+        def products(self) -> str:
+            """Геттер для получения списка продуктов в категории в виде строки."""
+            product_strings = [f"{product.name}, {product.price} руб. Остаток: {product.quantity} шт." for product in self.__products]
+            return "\n".join(product_strings) if product_strings else "Нет продуктов в категории."
+
+    def get_products(self):
+        """Метод для получения списка продуктов в категории."""
+        return self.__products[:]  # Возвращаем копию списка продуктов
+
+    def __repr__(self):
+        return f"Category(name={self.name}, description={self.description}, products={self.products})"
 
 
 if __name__ == "__main__":

@@ -1,16 +1,15 @@
 # Создаем класс c атрибутами
 class Product:
-    name: str  # Здесь мы пишем название атрибута и указываем тип
-    description: str
-    price: float
-    quantity: int
+    name: str  # Здесь мы пишем название атрибута и указываем тип description: str
+    _price: float  # Используем _price для хранения цены quantity: int
 
     def __init__(self, name: str, description: str, price: float, quantity: int):
         """Метод для инициализации экземпляра класса. Задаем значения атрибутам экземпляра."""
         self.name = name
         self.description = description
-        self.price = price
+        self._price = price
         self.quantity = quantity
+
     @classmethod
     def new_product(cls, product_data: dict):
         """Класс-метод для создания нового продукта из словаря."""
@@ -20,6 +19,27 @@ class Product:
             price=product_data.get('price'),
             quantity=product_data.get('quantity')
         )
+
+    @property
+    def price(self):
+        return self._price
+    @price.setter
+    def price(self, new_price: float):
+        if new_price < self._price:
+            while True:
+                confirmation = input(f"Вы уверены, что хотите понизить цену с {self._price} до {new_price}? (y/n): ")
+                if confirmation.lower() == 'y':
+                    self._price = new_price
+                    print(f"Цена успешно изменена на {self._price}.")
+                    break
+                elif confirmation.lower() == 'n':
+                    print("Изменение цены отменено.")
+                    break
+                else:
+                    print("Некорректный ввод. Пожалуйста, введите 'y' или 'n'.")
+        else:
+            self._price = new_price
+            print(f"Цена успешно изменена на {self._price}.")
 
     def __repr__(self):
         return f"Product(name={self.name}, description={self.description}, price={self.price}, quantity={self.quantity})"

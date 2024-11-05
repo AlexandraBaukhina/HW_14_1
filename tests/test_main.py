@@ -3,64 +3,52 @@ import pytest
 from src.main import Product, Category
 
 
-@pytest.fixture
-def product_data():
-    """Фикстура для тестовых данных продукта."""
-    return {
-        'name': 'Smartphone',
-        'description': 'Latest model smartphone',
-        'price': 699.99,
-        'quantity': 50
-    }
+def test_product_creation():
+    product = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 10)
+    assert product.name == "Samsung Galaxy S23 Ultra"
+    assert product.description == "256GB, Серый цвет, 200MP камера"
+    assert product.price == 180000.0
+    assert product.quantity == 10
 
-@pytest.fixture
-def product(product_data):
-    """Фикстура для создания экземпляра продукта."""
-    return Product.new_product(product_data)
 
-@pytest.fixture
-def category():
-    """Фикстура для создания экземпляра категории."""
-    return Category("Electronics", "Devices and gadgets")
+def test_product_str_method():
+    product = Product("Iphone 15", "512GB, Gray space", 210000.0, 5)
+    assert str(product) == "Iphone 15, 210000.0 руб. Остаток: 5 шт."
 
-def test_product_initialization(product, product_data):
-    """Тестируем инициализацию продукта."""
-    assert product.name == product_data['name']
-    assert product.description == product_data['description']
-    assert product.price == product_data['price']
-    assert product.quantity == product_data['quantity']
 
-def test_category_initialization(category):
-    """Тестируем инициализацию категории."""
-    assert category.name == "Electronics"
-    assert category.description == "Devices and gadgets"
-    assert len(category.get_products()) == 0  # Должно быть пусто
+def test_product_add_method():
+    product1 = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 10)
+    product2 = Product("Iphone 15", "512GB, Gray space", 210000.0, 5)
 
-def test_add_product(category, product):
-    """Тестируем добавление продукта в категорию."""
+    combined_product = product1 + product2
+
+    assert combined_product.name == "Сумма"
+    assert combined_product.description == "Сумма продуктов"
+    assert combined_product.price == (180000.0 * 10 + 210000.0 * 5) / (10 + 5)  # Средняя цена
+    assert combined_product.quantity == 15  # Общее количество
+
+
+def test_category_creation():
+    category = Category("Смартфоны", "Современные смартфоны с высокими характеристиками.")
+    assert category.name == "Смартфоны"
+    assert category.description == "Современные смартфоны с высокими характеристиками."
+    assert category.total_quantity() == 0  # В категории пока нет продуктов
+
+
+def test_add_product_to_category():
+    category = Category("Смартфоны", "Современные смартфоны с высокими характеристиками.")
+    product = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 10)
     category.add_product(product)
-    assert len(category.get_products()) == 1  # Теперь должен быть один продукт
-    assert category.get_products()[0].name == product.name
 
-def test_add_invalid_product(category):
-    """Тестируем добавление некорректного продукта."""
-    with pytest.raises(ValueError):
-        category.add_product("Not a product")  # Передаем строку вместо объекта Product
+    assert category.total_quantity() == 10  # Общее количество продуктов в категории
+    assert str(category) == "Смартфоны, количество продуктов: 10 шт."
+    assert "Samsung Galaxy S23 Ultra" in category.products  # Проверяем, что продукт добавлен
 
-def test_products_property(category, product):
-    """Тестируем свойство products для получения списка продуктов."""
-    category.add_product(product)
-    products_list = category.products
-    assert "Smartphone" in products_list  # Проверяем, что имя продукта есть в строке
 
-def test_category_counter():
-    """Тестируем счетчик категорий."""
-    initial_counter = Category.category_counter
-    new_category = Category("Home Appliances", "Appliances for home")
-    assert Category.category_counter == initial_counter + 1  # Проверяем, что счетчик увеличился
+def test_empty_category_products():
+    category = Category("Смартфоны", "Современные смартфоны с высокими характеристиками.")
+    assert category.products == "Нет продуктов в категории."
 
-def test_product_counter(category, product):
-    """Тестируем счетчик продуктов."""
-    initial_counter = Category.product_counter
-    category.add_product(product)
-    assert Category.product_counter == initial_counter + 1  # Проверяем, что счетчик увеличился
+
+if __name__ == "__main__":
+    pytest.main()

@@ -1,10 +1,8 @@
 import pytest
-
-from src.main import Product, Category
-
+from src.main import BaseProduct, Category, Smartphone, LawnGrass
 
 def test_product_creation():
-    product = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 10)
+    product = Smartphone("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 10, "Высокая", "S23 Ultra", "256GB", "Серый")
     assert product.name == "Samsung Galaxy S23 Ultra"
     assert product.description == "256GB, Серый цвет, 200MP камера"
     assert product.price == 180000.0
@@ -12,13 +10,13 @@ def test_product_creation():
 
 
 def test_product_str_method():
-    product = Product("Iphone 15", "512GB, Gray space", 210000.0, 5)
+    product = Smartphone("Iphone 15", "512GB, Gray space", 210000.0, 5, "Высокая", "15", "512GB", "Серый")
     assert str(product) == "Iphone 15, 210000.0 руб. Остаток: 5 шт."
 
 
 def test_product_add_method():
-    product1 = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 10)
-    product2 = Product("Iphone 15", "512GB, Gray space", 210000.0, 5)
+    product1 = Smartphone("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 10, "Высокая", "S23 Ultra", "256GB", "Серый")
+    product2 = Smartphone("Iphone 15", "512GB, Gray space", 210000.0, 5, "Высокая", "15", "512GB", "Серый")
 
     combined_product = product1 + product2
 
@@ -37,7 +35,7 @@ def test_category_creation():
 
 def test_add_product_to_category():
     category = Category("Смартфоны", "Современные смартфоны с высокими характеристиками.")
-    product = Product("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 10)
+    product = Smartphone("Samsung Galaxy S23 Ultra", "256GB, Серый цвет, 200MP камера", 180000.0, 10, "Высокая", "S23 Ultra", "256GB", "Серый")
     category.add_product(product)
 
     assert category.total_quantity() == 10  # Общее количество продуктов в категории
